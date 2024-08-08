@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -5,6 +7,10 @@ plugins {
     kotlin("plugin.serialization").version("1.7.10")
     id("kotlinx-serialization")
 }
+
+val localProperties = project.rootProject.file("local.properties")
+val properties = Properties()
+properties.load(localProperties.inputStream())
 
 android {
     namespace = "com.shivansh.atlysdemo"
@@ -21,6 +27,28 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        buildConfigField(
+            type = "String",
+            name = "APPLICATION_ID",
+            value = "\"${project.name}\""
+        )
+        buildConfigField(
+            type = "String",
+            name = "MOVIES_URL",
+            value = properties.getProperty("moviesApiUrl")
+        )
+        buildConfigField(
+            type = "String",
+            name = "MOVIES_ACCESS_TOKEN",
+            value = properties.getProperty("apiAccessToken")
+        )
+        buildConfigField(
+            type = "String",
+            name = "POSTER_URL_PREFIX",
+            value = properties.getProperty("posterPrefix")
+        )
+
     }
 
     buildTypes {
@@ -41,6 +69,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -61,6 +90,8 @@ dependencies {
     implementation(libs.bundles.compose)
     implementation(libs.kotlin.coroutines)
     implementation(libs.bundles.ktor)
+    implementation(libs.bundles.koin)
+    implementation(libs.glide)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
