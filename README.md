@@ -2,11 +2,15 @@
 This is a take home assignment from Atlys for Software Engineer - Android Job
 
 Development Setup:
-- TMDB API
-- `local.properties` to build and run the App
+Following are steps to build and run the app in Android Studio
+- Create account on TMDB and Generate API keys:
+  
+  https://developer.themoviedb.org/reference/trending-movies
+- Add the following values in your `local.properties` file:
   - `moviesApiUrl`="https://api.themoviedb.org/3/trending/movie/day?language=en-US"
   - `apiAccessToken`="Your Access Token herre"
   - `posterPrefix`="Poster URL prefix"
+- Build and run the app
  
 ## Screenshots
 Below are the screen shots on different device types and orientations
