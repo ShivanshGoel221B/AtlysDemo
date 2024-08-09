@@ -1,5 +1,11 @@
 package com.shivansh.atlysdemo.ui.components
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -27,9 +33,16 @@ import com.bumptech.glide.integration.compose.placeholder
 import com.shivansh.atlysdemo.R
 import com.shivansh.atlysdemo.domain.model.MovieModel
 
-@OptIn(ExperimentalGlideComposeApi::class, ExperimentalFoundationApi::class)
+@OptIn(
+    ExperimentalGlideComposeApi::class,
+    ExperimentalSharedTransitionApi::class
+)
 @Composable
-fun MovieCard(modifier: Modifier = Modifier, movie: MovieModel) {
+fun SharedTransitionScope.MovieCard(
+    modifier: Modifier = Modifier,
+    movie: MovieModel,
+    animatedVisibilityScope: AnimatedVisibilityScope
+) {
     Card(
         modifier = modifier,
         colors = CardDefaults.cardColors(containerColor = Color.Transparent),
@@ -40,7 +53,16 @@ fun MovieCard(modifier: Modifier = Modifier, movie: MovieModel) {
     ) {
         Column {
             GlideImage(
-                modifier = Modifier.fillMaxWidth().aspectRatio(2/3f),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(2 / 3f)
+                    .sharedElement(
+                        state = rememberSharedContentState(key = "poster/${movie.id}"),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        boundsTransform = { _, _ ->
+                            tween(durationMillis = 800)
+                        }
+                    ),
                 model = movie.posterUrl,
                 loading = placeholder(R.drawable.ic_photo),
                 contentDescription = null
@@ -48,7 +70,14 @@ fun MovieCard(modifier: Modifier = Modifier, movie: MovieModel) {
             Text(
                 modifier = Modifier
                     .padding(horizontal = 8.dp, vertical = 10.dp)
-                    .basicMarquee(iterations = 100),
+                    .basicMarquee(iterations = 100)
+                    .sharedElement(
+                        state = rememberSharedContentState(key = "title/${movie.id}"),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        boundsTransform = { _, _ ->
+                            tween(durationMillis = 800)
+                        }
+                    ),
                 text = movie.title,
                 style = MaterialTheme.typography.bodyLarge.copy(
                     fontWeight = FontWeight.SemiBold

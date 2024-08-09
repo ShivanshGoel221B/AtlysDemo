@@ -5,6 +5,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -29,6 +31,7 @@ class MainActivity : ComponentActivity() {
 
     private val viewModel by viewModels<MainViewModel>()
 
+    @OptIn(ExperimentalSharedTransitionApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -47,47 +50,50 @@ class MainActivity : ComponentActivity() {
 
             AtlysDemoTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    NavHost(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding),
-                        navController = navController,
-                        startDestination = Routes.HOME.name
-                    ) {
-                        composable(
-                            route = Routes.HOME.name
+                    SharedTransitionLayout {
+                        NavHost(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(innerPadding),
+                            navController = navController,
+                            startDestination = Routes.HOME.name
                         ) {
-                            MoviesScreen(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(8.dp),
-                                moviesUiState = moviesUiState,
-                                searchQuery = searchQuery,
-                                onUiEvent = viewModel::onUiEvent
-                            )
-                        }
-
-                        val detailsRoute = buildString {
-                            append(Routes.DETAILS.name)
-                            append("/{movieId}")
-                        }
-
-                        composable(
-                            route = detailsRoute,
-                            arguments = listOf(
-                                navArgument(name = "movieId") {
-                                    type = NavType.IntType
-                                }
-                            )
-                        ) { backStack ->
-                            val movieId = backStack.arguments?.getInt("movieId")
-                            val movie = moviesUiState.movies.firstOrNull { it.id == movieId }
-                            movie?.let {
-                                DetailsScreen(
-                                    modifier = Modifier.fillMaxSize(),
-                                    movie = it,
+                            composable(
+                                route = Routes.HOME.name
+                            ) {
+                                MoviesScreen(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(8.dp),
+                                    moviesUiState = moviesUiState,
+                                    searchQuery = searchQuery,
+                                    animatedVisibilityScope = this,
                                     onUiEvent = viewModel::onUiEvent
                                 )
+                            }
+
+                            val detailsRoute = buildString {
+                                append(Routes.DETAILS.name)
+                                append("/{movieId}")
+                            }
+
+                            composable(
+                                route = detailsRoute,
+                                arguments = listOf(
+                                    navArgument(name = "movieId") {
+                                        type = NavType.IntType
+                                    }
+                                )
+                            ) { backStack ->
+                                val movieId = backStack.arguments?.getInt("movieId")
+                                val movie = moviesUiState.movies.firstOrNull { it.id == movieId }
+                                movie?.let {
+                                    DetailsScreen(
+                                        modifier = Modifier.fillMaxSize(),
+                                        movie = it,
+                                        animatedVisibilityScope = this
+                                    )
+                                }
                             }
                         }
                     }

@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.shivansh.atlysdemo.R
 import com.shivansh.atlysdemo.ui.event.OnUiEvent
@@ -33,7 +34,7 @@ fun MoviesError(modifier: Modifier = Modifier, error: String, onUiEvent: OnUiEve
             tint = MaterialTheme.colorScheme.error.copy(alpha = 0.6f)
         )
         Spacer(modifier = Modifier.size(16.dp))
-        Text(text = error, color = MaterialTheme.colorScheme.error)
+        Text(text = error, color = MaterialTheme.colorScheme.error, textAlign = TextAlign.Center)
         Spacer(modifier = Modifier.size(12.dp))
         Button(onClick = { onUiEvent(UiEvent.RetryClick) }) {
             Text(text = "Retry")

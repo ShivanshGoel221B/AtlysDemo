@@ -1,5 +1,11 @@
 package com.shivansh.atlysdemo.ui.screens
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -18,6 +24,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -38,9 +45,9 @@ import com.shivansh.atlysdemo.domain.model.MovieModel
 import com.shivansh.atlysdemo.ui.event.OnUiEvent
 import com.shivansh.atlysdemo.ui.event.UiEvent
 
-@OptIn(ExperimentalGlideComposeApi::class)
+@OptIn(ExperimentalGlideComposeApi::class, ExperimentalSharedTransitionApi::class)
 @Composable
-fun DetailsScreen(modifier: Modifier = Modifier, movie: MovieModel, onUiEvent: OnUiEvent) {
+fun SharedTransitionScope.DetailsScreen(modifier: Modifier = Modifier, movie: MovieModel, animatedVisibilityScope: AnimatedVisibilityScope) {
     Scaffold(
         modifier = modifier
     ) { innerPadding ->
@@ -53,12 +60,21 @@ fun DetailsScreen(modifier: Modifier = Modifier, movie: MovieModel, onUiEvent: O
                 ),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Card {
+            Card(
+                colors = CardDefaults.cardColors(containerColor = Color.Transparent)
+            ) {
                 GlideImage(
                     modifier = Modifier
                         .fillMaxWidth(0.7f)
                         .aspectRatio(2 / 3f)
-                        .background(color = Color.Transparent, shape = MaterialTheme.shapes.large),
+                        .background(color = Color.Transparent, shape = MaterialTheme.shapes.large)
+                        .sharedElement(
+                            state = rememberSharedContentState(key = "poster/${movie.id}"),
+                            animatedVisibilityScope = animatedVisibilityScope,
+                            boundsTransform = { _, _ ->
+                                tween(durationMillis = 800)
+                            }
+                        ),
                     model = movie.posterUrl,
                     loading = placeholder(R.drawable.ic_photo),
                     contentDescription = null
@@ -70,6 +86,14 @@ fun DetailsScreen(modifier: Modifier = Modifier, movie: MovieModel, onUiEvent: O
                 modifier = Modifier.padding(vertical = 8.dp, horizontal = 24.dp)
             ) {
                 Text(
+                    modifier = Modifier
+                        .sharedElement(
+                            state = rememberSharedContentState(key = "title/${movie.id}"),
+                            animatedVisibilityScope = animatedVisibilityScope,
+                            boundsTransform = { _, _ ->
+                                tween(durationMillis = 800)
+                            }
+                        ),
                     text = movie.title,
                     style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.SemiBold)
                 )

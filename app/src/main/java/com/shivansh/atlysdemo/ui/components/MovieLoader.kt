@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,7 +42,10 @@ fun MovieLoader() {
             tint = MaterialTheme.colorScheme.primary
         )
         CircularProgressIndicator(
-            modifier = Modifier.size(84.dp)
+            modifier = Modifier.size(84.dp),
+            trackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.25f),
+            strokeWidth = 4.dp,
+            strokeCap = StrokeCap.Round
         )
     }
 }

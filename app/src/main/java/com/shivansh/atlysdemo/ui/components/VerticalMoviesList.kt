@@ -1,8 +1,10 @@
 package com.shivansh.atlysdemo.ui.components
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -14,10 +16,12 @@ import com.shivansh.atlysdemo.ui.event.OnUiEvent
 import com.shivansh.atlysdemo.ui.event.UiEvent
 import com.shivansh.atlysdemo.ui.state.MoviesUiState
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun ColumnScope.VerticalMoviesList(
+fun SharedTransitionScope.VerticalMoviesList(
     modifier: Modifier = Modifier,
     moviesUiState: MoviesUiState,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     onUiEvent: OnUiEvent
 ) {
     LazyVerticalGrid(
@@ -40,7 +44,8 @@ fun ColumnScope.VerticalMoviesList(
                                 onUiEvent(UiEvent.MovieClick(movie.id))
                             }
                         ),
-                    movie = movie
+                    movie = movie,
+                    animatedVisibilityScope = animatedVisibilityScope
                 )
             }
         )
