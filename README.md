@@ -40,6 +40,7 @@ Landscape:
 ### Tablet
 
 Portrait:
+
 ![Screenshot_20240809_180450 (Small)](https://github.com/user-attachments/assets/d323a8ac-39a3-4a66-b4ab-7cab95680304)
 ![Screenshot_20240809_180323 (Small)](https://github.com/user-attachments/assets/f37f5b6a-992f-4813-807d-ae02ffb35cbf)
 ![Screenshot_20240809_180504 (Small)](https://github.com/user-attachments/assets/a0fb0135-9cf2-4046-8453-ff4566664f54)
@@ -77,3 +78,9 @@ https://github.com/user-attachments/assets/e14e5b01-768e-4d8c-9437-dcc36c30c14f
 https://github.com/user-attachments/assets/567c6c93-59ee-468e-821f-cc61f1a9f364
 
 
+
+### Tablet
+
+https://github.com/user-attachments/assets/30ffa748-9c24-4de0-84ea-fc1dcfa907ba
+
+[Screen_recording_20240809_180848.webm](https://github.com/user-attachments/assets/e76233c1-902d-405a-9c9f-4b3f93cbe21d)
