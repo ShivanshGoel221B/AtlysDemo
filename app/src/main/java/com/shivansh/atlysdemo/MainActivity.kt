@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             LaunchedEffect(Unit) {
                 viewModel.eventFlow.collect { event ->
-                    when(event) {
+                    when (event) {
                         is Event.NavigateTo -> navController.navigate(event.route)
                         Event.NavigateUp -> navController.navigateUp()
                     }

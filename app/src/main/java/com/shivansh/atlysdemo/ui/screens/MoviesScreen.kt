@@ -2,13 +2,17 @@ package com.shivansh.atlysdemo.ui.screens
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Icon
@@ -17,9 +21,12 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.shivansh.atlysdemo.ui.components.MovieCard
+import com.shivansh.atlysdemo.ui.components.MovieLoader
+import com.shivansh.atlysdemo.ui.components.MoviesError
 import com.shivansh.atlysdemo.ui.components.MoviesSearchBar
 import com.shivansh.atlysdemo.ui.components.VerticalMoviesList
 import com.shivansh.atlysdemo.ui.event.OnUiEvent
@@ -42,12 +49,31 @@ fun MoviesScreen(
             onUiEvent = onUiEvent
         )
         Spacer(modifier = Modifier.height(12.dp))
-        VerticalMoviesList(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f),
-            moviesUiState = moviesUiState,
-            onUiEvent = onUiEvent
-        )
+        val moviesError = moviesUiState.error
+        if (moviesUiState.loading) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                MovieLoader()
+            }
+        } else if (moviesError != null) {
+            MoviesError(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(16.dp),
+                error = moviesError,
+                onUiEvent = onUiEvent
+            )
+        } else {
+            VerticalMoviesList(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                moviesUiState = moviesUiState,
+                onUiEvent = onUiEvent
+            )
+        }
     }
 }

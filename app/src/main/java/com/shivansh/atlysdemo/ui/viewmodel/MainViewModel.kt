@@ -87,6 +87,7 @@ class MainViewModel: ViewModel(), KoinComponent {
                     moviesLoadingError.value = errorMessage
                 }
             }
+            moviesLoading.value = false
         }
     }
 
@@ -102,6 +103,7 @@ class MainViewModel: ViewModel(), KoinComponent {
             }
             is UiEvent.UpdateSearchQuery -> _searchQuery.value = event.query
             UiEvent.BackClick -> sendEvent(Event.NavigateUp)
+            UiEvent.RetryClick -> fetchTrendingMovies()
         }
     }
 

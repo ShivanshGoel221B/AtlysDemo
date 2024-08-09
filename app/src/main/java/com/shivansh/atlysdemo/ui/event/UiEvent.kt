@@ -6,4 +6,5 @@ sealed interface UiEvent {
     data class UpdateSearchQuery(val query: String): UiEvent
     data class MovieClick(val movieId: Int): UiEvent
     data object BackClick: UiEvent
+    data object RetryClick: UiEvent
 }
