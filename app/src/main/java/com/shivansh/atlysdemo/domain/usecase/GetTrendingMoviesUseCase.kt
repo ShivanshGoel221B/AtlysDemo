@@ -8,9 +8,9 @@ import com.shivansh.atlysdemo.utils.mapResult
 
 class GetTrendingMoviesUseCase(
     private val repository: MoviesRepository
-) : SuspendUseCase<List<MovieModel>> {
+) {
 
-    override suspend fun launch(): AtlysResult<List<MovieModel>> {
+    suspend operator fun invoke(): AtlysResult<List<MovieModel>> {
         return repository.getTrendingMovies().mapResult { result ->
             result.results.map { it.toModel() }
         }
