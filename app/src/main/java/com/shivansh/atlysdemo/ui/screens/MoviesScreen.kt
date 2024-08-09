@@ -20,6 +20,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.shivansh.atlysdemo.ui.components.MovieCard
+import com.shivansh.atlysdemo.ui.components.MoviesSearchBar
+import com.shivansh.atlysdemo.ui.components.VerticalMoviesList
 import com.shivansh.atlysdemo.ui.event.OnUiEvent
 import com.shivansh.atlysdemo.ui.event.UiEvent
 import com.shivansh.atlysdemo.ui.state.MoviesUiState
@@ -32,59 +34,20 @@ fun MoviesScreen(
     onUiEvent: OnUiEvent
 ) {
     Column(modifier = modifier) {
-        moviesUiState.error?.let {
-            Text(text = it)
-        }
-        OutlinedTextField(
+        MoviesSearchBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp),
-            shape = MaterialTheme.shapes.medium,
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Rounded.Search,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.25f)
-                )
-            },
-            placeholder = {
-                Text(
-                    text = "Search movies",
-                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.25f)
-                )
-            },
-            maxLines = 1,
-            value = searchQuery,
-            onValueChange = {
-                onUiEvent(UiEvent.UpdateSearchQuery(it))
-            }
+            searchQuery = searchQuery,
+            onUiEvent = onUiEvent
         )
         Spacer(modifier = Modifier.height(12.dp))
-        LazyVerticalGrid(
-            columns = GridCells.Adaptive(172.dp), modifier = Modifier
+        VerticalMoviesList(
+            modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f)
-        ) {
-            items(
-                count = moviesUiState.movies.size,
-                key = { it },
-                itemContent = {
-                    val movie = moviesUiState.movies[it]
-                    MovieCard(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp)
-                            .clickable(
-                                interactionSource = MutableInteractionSource(),
-                                indication = null,
-                                onClick = {
-                                    onUiEvent(UiEvent.MovieClick(movie.id))
-                                }
-                            ),
-                        movie = movie
-                    )
-                }
-            )
-        }
+                .weight(1f),
+            moviesUiState = moviesUiState,
+            onUiEvent = onUiEvent
+        )
     }
 }
