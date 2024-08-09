@@ -60,7 +60,7 @@ fun DetailsScreen(modifier: Modifier = Modifier, movie: MovieModel, onUiEvent: O
                         .aspectRatio(2 / 3f)
                         .background(color = Color.Transparent, shape = MaterialTheme.shapes.large),
                     model = movie.posterUrl,
-                    loading = placeholder(R.drawable.ic_launcher_foreground),
+                    loading = placeholder(R.drawable.ic_photo),
                     contentDescription = null
                 )
             }

@@ -42,7 +42,7 @@ fun MovieCard(modifier: Modifier = Modifier, movie: MovieModel) {
             GlideImage(
                 modifier = Modifier.fillMaxWidth().aspectRatio(2/3f),
                 model = movie.posterUrl,
-                loading = placeholder(R.drawable.ic_launcher_foreground),
+                loading = placeholder(R.drawable.ic_photo),
                 contentDescription = null
             )
             Text(
