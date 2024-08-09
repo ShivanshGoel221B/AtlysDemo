@@ -2,7 +2,9 @@ package com.shivansh.atlysdemo.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.shivansh.atlysdemo.domain.model.MovieModel
 import com.shivansh.atlysdemo.domain.model.Routes
+import com.shivansh.atlysdemo.domain.usecase.FilterMoviesUseCase
 import com.shivansh.atlysdemo.domain.usecase.GetTrendingMoviesUseCase
 import com.shivansh.atlysdemo.ui.event.Event
 import com.shivansh.atlysdemo.ui.event.UiEvent
@@ -11,8 +13,11 @@ import com.shivansh.atlysdemo.utils.AtlysResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -21,12 +26,45 @@ import java.net.UnknownHostException
 class MainViewModel: ViewModel(), KoinComponent {
 
     private val getTrendingMoviesUseCase: GetTrendingMoviesUseCase by inject()
+    private val filterMoviesUseCase: FilterMoviesUseCase by inject()
 
-    private val _moviesUiState = MutableStateFlow(MoviesUiState())
-    val moviesUiState = _moviesUiState.asStateFlow()
+    private val allTrendingMovies = MutableStateFlow(emptyList<MovieModel>())
+
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery = _searchQuery.asStateFlow()
+
+    private val moviesLoading = MutableStateFlow(true)
+    private val moviesLoadingError = MutableStateFlow<String?>(null)
 
     private val eventChannel = Channel<Event>()
     val eventFlow = eventChannel.receiveAsFlow()
+
+    private val filteredMovies = combine(
+        allTrendingMovies,
+        searchQuery
+    ) { movies, query ->
+        filterMoviesUseCase(movies, query)
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(500),
+        initialValue = allTrendingMovies.value
+    )
+
+    val moviesUiState = combine(
+        filteredMovies,
+        moviesLoading,
+        moviesLoadingError
+    ) { movies, loading, error ->
+        MoviesUiState(
+            loading = loading,
+            error = error,
+            movies = movies
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Eagerly,
+        initialValue = MoviesUiState()
+    )
 
     init {
         fetchTrendingMovies()
@@ -34,13 +72,11 @@ class MainViewModel: ViewModel(), KoinComponent {
 
     private fun fetchTrendingMovies() {
         viewModelScope.launch(Dispatchers.IO) {
-            _moviesUiState.value = MoviesUiState()
+            moviesLoading.value = true
+            moviesLoadingError.value = null
             when(val moviesResult = getTrendingMoviesUseCase()) {
                 is AtlysResult.Success -> {
-                    _moviesUiState.value = MoviesUiState(
-                        loading = false,
-                        movies = moviesResult.data
-                    )
+                    allTrendingMovies.value = moviesResult.data
                 }
                 is AtlysResult.Failure -> {
                     val errorMessage = if (moviesResult.exception is UnknownHostException) {
@@ -48,10 +84,7 @@ class MainViewModel: ViewModel(), KoinComponent {
                     } else {
                         "Something went wrong, please try again"
                     }
-                    _moviesUiState.value = MoviesUiState(
-                        loading = false,
-                        error = errorMessage
-                    )
+                    moviesLoadingError.value = errorMessage
                 }
             }
         }
@@ -67,7 +100,7 @@ class MainViewModel: ViewModel(), KoinComponent {
                 }
                 sendEvent(Event.NavigateTo(route))
             }
-            is UiEvent.UpdateSearchQuery -> TODO()
+            is UiEvent.UpdateSearchQuery -> _searchQuery.value = event.query
             UiEvent.BackClick -> sendEvent(Event.NavigateUp)
         }
     }
