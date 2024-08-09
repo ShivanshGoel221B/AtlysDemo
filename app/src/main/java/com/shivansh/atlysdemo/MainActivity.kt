@@ -89,7 +89,7 @@ class MainActivity : ComponentActivity() {
                                 val movie = moviesUiState.movies.firstOrNull { it.id == movieId }
                                 movie?.let {
                                     DetailsScreen(
-                                        modifier = Modifier.fillMaxSize(),
+                                        modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
                                         movie = it,
                                         animatedVisibilityScope = this
                                     )

@@ -43,7 +43,7 @@ fun DetailsContainer(
                     poster(Modifier.fillMaxWidth(0.7f))
                     Spacer(modifier = Modifier.size(16.dp))
                     Column(
-                        modifier = Modifier.padding(vertical = 8.dp, horizontal = 24.dp)
+                        modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp)
                     ) {
                         title()
                         Spacer(modifier = Modifier.size(16.dp))
