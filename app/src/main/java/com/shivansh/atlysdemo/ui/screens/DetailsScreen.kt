@@ -42,30 +42,27 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
 import com.shivansh.atlysdemo.R
 import com.shivansh.atlysdemo.domain.model.MovieModel
+import com.shivansh.atlysdemo.ui.components.DetailsContainer
 import com.shivansh.atlysdemo.ui.event.OnUiEvent
 import com.shivansh.atlysdemo.ui.event.UiEvent
 
 @OptIn(ExperimentalGlideComposeApi::class, ExperimentalSharedTransitionApi::class)
 @Composable
-fun SharedTransitionScope.DetailsScreen(modifier: Modifier = Modifier, movie: MovieModel, animatedVisibilityScope: AnimatedVisibilityScope) {
-    Scaffold(
-        modifier = modifier
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .verticalScroll(
-                    rememberScrollState()
-                ),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+fun SharedTransitionScope.DetailsScreen(
+    modifier: Modifier = Modifier,
+    movie: MovieModel,
+    animatedVisibilityScope: AnimatedVisibilityScope
+) {
+
+    DetailsContainer(
+        modifier = modifier,
+        poster = { sizeModifier ->
             Card(
-                colors = CardDefaults.cardColors(containerColor = Color.Transparent)
+                colors = CardDefaults.cardColors(containerColor = Color.Transparent),
+                modifier = Modifier.padding(bottom = 12.dp)
             ) {
                 GlideImage(
-                    modifier = Modifier
-                        .fillMaxWidth(0.7f)
+                    modifier = sizeModifier
                         .aspectRatio(2 / 3f)
                         .background(color = Color.Transparent, shape = MaterialTheme.shapes.large)
                         .sharedElement(
@@ -80,32 +77,27 @@ fun SharedTransitionScope.DetailsScreen(modifier: Modifier = Modifier, movie: Mo
                     contentDescription = null
                 )
             }
-            Spacer(modifier = Modifier.size(16.dp))
-
-            Column(
-                modifier = Modifier.padding(vertical = 8.dp, horizontal = 24.dp)
-            ) {
-                Text(
-                    modifier = Modifier
-                        .sharedElement(
-                            state = rememberSharedContentState(key = "title/${movie.id}"),
-                            animatedVisibilityScope = animatedVisibilityScope,
-                            boundsTransform = { _, _ ->
-                                tween(durationMillis = 800)
-                            }
-                        ),
-                    text = movie.title,
-                    style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.SemiBold)
-                )
-
-                Spacer(modifier = Modifier.size(16.dp))
-
-                Text(
-                    text = movie.description,
-                    style = MaterialTheme.typography.bodyLarge,
-                    textAlign = TextAlign.Justify
-                )
-            }
+        },
+        title = {
+            Text(
+                modifier = Modifier
+                    .sharedElement(
+                        state = rememberSharedContentState(key = "title/${movie.id}"),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        boundsTransform = { _, _ ->
+                            tween(durationMillis = 800)
+                        }
+                    ),
+                text = movie.title,
+                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.SemiBold)
+            )
+        },
+        description = {
+            Text(
+                text = movie.description,
+                style = MaterialTheme.typography.bodyLarge,
+                textAlign = TextAlign.Justify
+            )
         }
-    }
+    )
 }
