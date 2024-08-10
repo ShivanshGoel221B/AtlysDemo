@@ -40,6 +40,12 @@ Landscape:
 ![Screenshot_20240809_191554 (Custom)](https://github.com/user-attachments/assets/c34d639d-3943-4ab7-9c85-4e1e815cce29)
 ![Screenshot_20240809_191033 (Custom)](https://github.com/user-attachments/assets/a6c5ee8e-1608-41c1-9912-781ff3c50a83)
 
+**Error**
+
+![Screenshot_20240810_103620 (Phone)](https://github.com/user-attachments/assets/e012fff5-30fe-492b-b654-204158c3025f)
+![Screenshot_20240810_103726 (Phone)](https://github.com/user-attachments/assets/498665b9-c1e3-4fce-8c93-1e2db6fb842d)
+
+
 
 ### Tablet
 
